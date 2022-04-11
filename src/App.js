@@ -1,24 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import "react-toastify/dist/ReactToastify.css";
+import PostList from "./component/post/PostList";
+import { ToastContainer, Flip } from "react-toastify";
+import AddPostForm from "./component/post/AddPostForm";
+import Layout from "./component/layout/Layout";
+import SinglePost from "./component/post/SinglePost";
+import { Route, Routes } from "react-router-dom";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <main className="App">
+      <ToastContainer transition={Flip} pauseOnFocusLoss={false} />
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<PostList />} />
+
+          <Route path="post">
+            <Route index element={<AddPostForm />} />
+            <Route path=":postId" element={<SinglePost />} />
+          </Route>
+        </Route>
+      </Routes>
+    </main>
   );
 }
 
