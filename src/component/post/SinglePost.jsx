@@ -29,7 +29,7 @@ const SinglePost = () => {
         <TimeAgo timestamp={post.dateCreated} />
         <div className="p-3">
           <Button
-            onClick={() => history(`post/edit/${post.id}`)}
+            onClick={() => history(`/post/edit/${post.id}`)}
             style={{ width: "150px" }}
             variant="primary"
           >

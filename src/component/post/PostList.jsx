@@ -1,41 +1,86 @@
-import React from "react";
-import { Button, Card, Container } from "react-bootstrap";
+import React, { useState } from "react";
+import { Button, Container, Form } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { selectAllPost } from "../../store/postSlice";
-import TimeAgo from "./TimeAgo";
-import { useNavigate } from "react-router-dom";
+import Pagination from "../layout/Pagination";
+import Post from "./Post";
 
 const PostList = () => {
   const posts = useSelector(selectAllPost);
+  const [newPosts, setNewPosts] = useState(posts);
+  const [searchValue, setSearchValue] = useState("");
+  const [sorting, setSorting] = useState();
+
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostsPerPage] = useState(4);
 
   const orderedPost = posts
     .slice()
     .sort((a, b) => b.dateCreated.localeCompare(a.dateCreated));
 
-  const history = useNavigate();
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  let currentPosts = orderedPost.slice(indexOfFirstPost, indexOfLastPost);
 
-  const renderPosts = orderedPost.map((post) => (
-    <Card key={post.id} className="mb-4">
-      <Card.Header>Blog Post {post.id}</Card.Header>
-      <Card.Title className="p-2">{post.title}</Card.Title>
-      <Card.Text className="p-2">{post.content.substring(0, 100)}</Card.Text>
-      <TimeAgo timestamp={post.dateCreated} />
-      <div className="p-3">
-        <Button
-          onClick={() => {
-            history(`/post/${post.id}`);
-          }}
-          style={{ width: "150px" }}
-          variant="primary"
-        >
-          More Details
-        </Button>
-      </div>
-    </Card>
-  ));
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handleOrderTitle = () => {
+    setSorting(
+      orderedPost.slice(indexOfFirstPost, indexOfLastPost).sort((a, b) => {
+        if (a.title < b.title) {
+          return a.title.localeCompare(b.title);
+        }
+        if (a.title > b.title) {
+          return b.title.localeCompare(a.title);
+        }
+      })
+    );
+  };
+
+  const handlePostOrderDate = () => {
+    setSorting(
+      orderedPost.slice(indexOfFirstPost, indexOfLastPost).sort((a, b) => {
+        if (a.dateCreated < b.dateCreated) {
+          return a.dateCreated.localeCompare(b.dateCreated);
+        }
+        if (a.dateCreated > b.dateCreated) {
+          return b.dateCreated.localeCompare(a.dateCreated);
+        }
+      })
+    );
+  };
+
   return (
     <Container>
-      <section className="mt-3">{renderPosts}</section>
+      <Form.Group className="mb-3" controlId="formBasicEmail">
+        <Form.Label>Post Title</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Enter Title"
+          value={searchValue}
+          onChange={(event) => {
+            setSearchValue(event.target.value);
+          }}
+        />
+      </Form.Group>
+      <Button type="button" onClick={handleOrderTitle}>
+        Sort Title
+      </Button>
+      &nbsp;
+      <Button type="button" onClick={handlePostOrderDate}>
+        Sort Date Crated
+      </Button>
+      <Post
+        orderedPosts={currentPosts}
+        sorting={sorting}
+        searchValue={searchValue}
+      />
+      <Pagination
+        postsPerPage={postsPerPage}
+        totalPosts={orderedPost.length}
+        paginate={paginate}
+      />
     </Container>
   );
 };
