@@ -80,7 +80,7 @@ const AddPostForm = () => {
             formik.handleSubmit(e);
           }}
         >
-          <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Group className="mb-3">
             <Form.Label>Post Title</Form.Label>
             <Form.Control
               id="postTitle"
@@ -94,7 +94,7 @@ const AddPostForm = () => {
           {errorStates.postTitle && (
             <p className="error-text">Post title is required</p>
           )}
-          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+          <Form.Group className="mb-3">
             <Form.Label>Content</Form.Label>
             <Form.Control
               as="textarea"

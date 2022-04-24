@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { selectAllPost } from "../../store/postSlice";
@@ -15,6 +15,9 @@ const PostList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostsPerPage] = useState(4);
 
+  const [sortReverse, setSortReverse] = useState(false);
+  const [sortReverseDate, setSortReverseDate] = useState(false);
+
   const orderedPost = posts
     .slice()
     .sort((a, b) => b.dateCreated.localeCompare(a.dateCreated));
@@ -28,10 +31,11 @@ const PostList = () => {
   const handleOrderTitle = () => {
     setSorting(
       orderedPost.slice(indexOfFirstPost, indexOfLastPost).sort((a, b) => {
-        if (a.title < b.title) {
+        if (!sortReverse) {
+          setSortReverse((prevState) => !prevState);
           return a.title.localeCompare(b.title);
-        }
-        if (a.title > b.title) {
+        } else {
+          setSortReverse((prevState) => !prevState);
           return b.title.localeCompare(a.title);
         }
       })
@@ -41,10 +45,11 @@ const PostList = () => {
   const handlePostOrderDate = () => {
     setSorting(
       orderedPost.slice(indexOfFirstPost, indexOfLastPost).sort((a, b) => {
-        if (a.dateCreated < b.dateCreated) {
+        if (!sortReverseDate) {
+          setSortReverseDate((prevState) => !prevState);
           return a.dateCreated.localeCompare(b.dateCreated);
-        }
-        if (a.dateCreated > b.dateCreated) {
+        } else {
+          setSortReverseDate((prevState) => !prevState);
           return b.dateCreated.localeCompare(a.dateCreated);
         }
       })
