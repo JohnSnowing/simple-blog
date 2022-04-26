@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 
 import { useDispatch } from "react-redux";
 import { postAdded } from "../../store/postSlice";
+import { useNavigate } from "react-router-dom";
 
 const errorStatesMain = {
   postContent: false,
@@ -13,6 +14,8 @@ const errorStatesMain = {
 
 const AddPostForm = () => {
   const [errorStates, setErrorStates] = useState(errorStatesMain);
+
+  const history = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -66,6 +69,8 @@ const AddPostForm = () => {
         toast("Post Added");
 
         formik.resetForm();
+
+        history("/");
       }
     },
   });
